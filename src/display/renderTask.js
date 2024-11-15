@@ -1,7 +1,7 @@
 import { EventEmitter } from "../events/eventEmitter";
 import projectImg from "../images/folder-outline.svg"
 
-function TaskRenderer(container){
+function TaskRenderer(container, emitter){
     
     const getContainer = () => container;
 
@@ -56,7 +56,7 @@ function TaskRenderer(container){
     const clearTasks = () => container.textContent ="";
 
 
-    const notifyPageLoad = (emitter) => {
+    const notifyPageLoad = () => {
         emitter.publish("pageDomLoad", null);
     }
     
@@ -72,3 +72,4 @@ function TaskRenderer(container){
 export{
     TaskRenderer
 }
+

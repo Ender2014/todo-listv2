@@ -25,20 +25,26 @@ const todayBtn = document.querySelector(".today");
 const addProjectBtn = document.querySelector(".projectBtn");
 const projectList = document.querySelector(".project-list");
 
-const contentTasks = document.querySelector(".task-content");
-
 function extractNumbers(string){
-    return +(string.replace(/[^0-9]/g, ''))
+    return +(string.replace(/[^0-9]/g, ''));
+}
+
+function extractString(string){
+    return string.replace(/[^a-zA-Z]/g, ''); 
+}
+
+function getInnerText(domElement){
+    return extractString(domElement.innerText);
 }
 
 let projectIdCounter = 100;
 let taskIdCounter = 200;
-let activeProject = "";
+
 
 const emitter = EventEmitter()
 const projectManager = ProjectManager();
-const taskRenderer = TaskRenderer( contentTasks );
-const projectRenderer = ProjectRenderer(projectList);
+const taskRenderer = TaskRenderer( contentDom, emitter);
+const projectRenderer = ProjectRenderer(projectList, emitter);
 const pageRenderer =  PageRenderer( contentDom, taskRenderer);
 
 const sideBar = Sidebar({
@@ -48,7 +54,7 @@ const sideBar = Sidebar({
 
     [todayBtn.innerText]: () =>{
         const todayTasks = projectManager.getTasksDueWithinDays(1);
-        pageRenderer.renderPage(activeProject.name, todayTasks);
+        pageRenderer.renderPage(todayBtn.innerText, todayTasks);
     },
 
     [upcomingBtn.innerText]: () =>{
@@ -68,34 +74,24 @@ const sideBar = Sidebar({
     [addProjectBtn.innerText]: () => {
         modal2.showModal();
     },
-    "project": () => {
-        const tasks = activeProject.getAllTasks();
-        pageRenderer.renderPage(activeProject.name, tasks);
-    }
-})
+});
 
-//onLoad
+//onload
 document.addEventListener('DOMContentLoaded', () => {
     const project = Project("My Tasks", projectIdCounter++);
+
     projectManager.addProject(project);
+
+    projectRenderer.renderProject(project);
+
     projectManager.switchActiveProject(project.getId()); 
-    activeProject = projectManager.getActiveProject();   
+    const activeProject = projectManager.getActiveProject(); 
+    console.log(activeProject)  
 
-    sideBar.changeSelection(activeProject.name,  () => {
-        pageRenderer.renderPage(activeProject.name, project.getTasks())
-    });
-    sideBar.setCurrSelection(activeProject.name);
-    sideBar.runCurrSelection();
+    pageRenderer.renderPage(activeProject.name, activeProject.getTasks());
 });
 
-//sidebar buttons
-document.querySelector('.sidebar').addEventListener('click', (e) => {
-    const buttonText = e.target.textContent;
-    if (sideBar.getSelections()[buttonText]) {
-        sideBar.setCurrSelection(buttonText);
-        sideBar.runCurrSelection();
-    }
-});
+//real time, when render page (page dom changed) is called, will also re apply event listeners.
 
 //modalBtns
 form.addEventListener('submit', function(event) {
@@ -120,26 +116,49 @@ addBtn.addEventListener("click", () =>{
     const dueDate = form.elements['dueDate'].value;
     const priority = form.elements['priority'].value;
 
-    const activeProject = projectMng.getActiveProject();
+    const activeProject = projectManager.getActiveProject(); 
 
-    const task = Task(title,taskIdCounter++, desc, dueDate, priority);
+    const task = Task(title, taskIdCounter++, desc, dueDate, priority);
     activeProject.addTask(task);
 
-    renderProjectNav(projectMng, emitter); 
-    taskRenderer.renderPage(projectMng.getActiveProject().name, projectMng.getActiveProject().getTasks(), emitter);
+    pageRenderer.renderPage(activeProject.name, activeProject.getTasks());
+    projectRenderer.renderProject(activeProject);
+    
     modal.close();
 });
 
 addBtn2.addEventListener("click", () =>{
     const title = form2.elements['title'].value; 
     const project = Project(title, projectIdCounter++);
-    projectMng.addProject(project);
+    projectManager.addProject(project);
 
-    renderProjectNav(projectMng, emitter); 
+    projectRenderer.renderProject(project);
     
     modal2.close();
 });
 
+//real time, when render project (project dom changed) is called, will also re apply event listeners.
+emitter.subscribe("projectDomLoad", (data) => {
+    console.log(sideBar.getSelections())
+    //add to listeners to sidebar project entries
+    sideBar.changeSelection(data.innerText, ()=>{
+
+        projectManager.switchActiveProject(extractNumbers(data.id))
+        const activeProject = projectManager.getActiveProject();
+        pageRenderer.renderPage(activeProject.name, activeProject.getTasks());
+    });
+
+    //sidebar navigation
+    document.querySelector('.sidebar').addEventListener('click', (e) => {
+        const buttonText = e.target.innerText;
+    
+        if (sideBar.getSelections()[buttonText]) {
+            sideBar.setCurrSelection(buttonText);
+            sideBar.runCurrSelection();
+        }
+    });
+});
+/*
 // project-list entries
 emitter.subscribe("projectDomChanged", () => {
     const projectsBtns = document.querySelectorAll(".project-list li button");
@@ -162,8 +181,5 @@ emitter.subscribe("pageDomLoad", () => {
         })
     });
 
-});
-
-
-
+});*/
 

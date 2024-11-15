@@ -1,42 +1,53 @@
 import projectImg from "../images/folder-outline.svg"
 import { EventEmitter } from "../events/eventEmitter";
 
-function ProjectRenderer(container){
-
+function ProjectRenderer(container, emitter){
+ 
     const getContainer = () => container;
 
+    const getProject = (projectId) =>{
+        return document.getElementById(`project${projectId}`);
+    };
+
     const renderProject = (project) => {
-        const projectLi = document.createElement("li");
-    
-        const projectBtn = document.createElement("button");
-        projectBtn.setAttribute("type", "button");
-        projectBtn.id = `project${project.getId()}`
+        let projectDom = "";
 
-        const projectTitle = document.createElement("h3");
-        projectTitle.textContent = `${project.name} (${project.getTasks().length})`;
+        if( getProject(project.getId()) ){
+            projectDom = getProject(project.getId());
+            projectDom.querySelector("h3").textContent = `${project.name} (${project.getTasks().length})`;
+        }else{
+            const projectLi = document.createElement("li");
         
-        const img = document.createElement("img");
-        img.src = projectImg;
+            projectDom = document.createElement("button");
+            projectDom.setAttribute("type", "button");
+            projectDom.id = `project${project.getId()}`
 
-        projectBtn.appendChild(img);
-        projectBtn.appendChild(projectTitle);
-        
-        projectLi.appendChild(projectBtn);
+            const projectTitle = document.createElement("h3");
+            projectTitle.textContent = `${project.name} (${project.getTasks().length})`;
+            
+            const img = document.createElement("img");
+            img.src = projectImg;
 
-        container.appendChild(projectLi);
+            projectDom.appendChild(img);
+            projectDom.appendChild(projectTitle);
+            
+            projectLi.appendChild(projectDom);
+
+            container.appendChild(projectLi);
+        }
+        notifyProjectLoad(projectDom);
     }
     
     const removeProject = (projectId) => {
-        const projectElement = container.querySelector(`#${projectId}`);
-        container.removeChild(projectElement);
+        container.removeChild(getProject(projectId));
     }
 
     const clearProject = () => container.textContent ="";
 
-    const notifyProjectLoad = (emitter) => {
-        emitter.publish("pageDomLoad", null);
+    const notifyProjectLoad = (data) => {
+        emitter.publish("projectDomLoad", data);
     }
-    
+
     return{
         getContainer,
         renderProject,

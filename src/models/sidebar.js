@@ -1,7 +1,7 @@
-function Sidebar(selectionss = {}){
-    const selections = selectionss;
+function Sidebar(selections = {}){
     
     let currentSelection = "";
+
     const getSelections = () =>selections; 
 
     const getCurrSelection = () => currentSelection;
