@@ -223,6 +223,8 @@ dialog::backdrop{
 /* Content- Start*/
 
 .content{
+    display:flex;
+    flex-direction: column;
     background-color: var(--background-color); 
     color: var(--text-primary-color);
     padding: 2rem;

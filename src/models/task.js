@@ -1,6 +1,7 @@
 
 function Task(title, id, desc, dueDate, priority){
    const validDueDate = dueDate ? new Date(dueDate) : null;
+
    let isComplete = false;
 
    const taskId = id;
@@ -9,7 +10,7 @@ function Task(title, id, desc, dueDate, priority){
 
    const getIsComplete = () => isComplete;
 
-   const switchIsComplete = () => isComplete ? isComplete = false : isComplete = true
+   const switchIsComplete = () => isComplete = !isComplete;
 
    return{
       title,  
@@ -17,6 +18,7 @@ function Task(title, id, desc, dueDate, priority){
       dueDate: 
       validDueDate, 
       priority,
+      isComplete,
       getIsComplete,
       getId,
       switchIsComplete,
