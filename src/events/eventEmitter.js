@@ -5,8 +5,6 @@ function EventEmitter(){
         if(!events[event]){
             events[event] = [];
         }
-
-        
         events[event].push(callback);
     }
 

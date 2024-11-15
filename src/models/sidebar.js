@@ -1,18 +1,23 @@
-function Sidebar(){
-    const selections = { };
-
+function Sidebar(selectionss = {}){
+    const selections = selectionss;
+    
     let currentSelection = "";
+    const getSelections = () =>selections; 
 
     const getCurrSelection = () => currentSelection;
 
     const setCurrSelection = (newSelection) => currentSelection = newSelection;
 
-    const addSelection = (newSelection, callBack) => selections[newSelection] = callBack;
+    const changeSelection = (newSelection, callBack) => selections[newSelection] = callBack;
+
+    const runCurrSelection = () => selections[currentSelection]();
 
     return{
+        getSelections,
         getCurrSelection,
         setCurrSelection,
-        addSelection
+        changeSelection,
+        runCurrSelection 
     }
 }
 

@@ -1,5 +1,4 @@
 import { isWithinInterval, addDays, startOfToday } from 'date-fns';
-import { Project } from './project';
 
 function ProjectManager(){
     let idCounter = 0;

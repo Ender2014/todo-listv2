@@ -1,53 +1,100 @@
 import { Project } from "../models/project";
 import { Task } from "../models/task";
-import { renderProjectNav } from "../display/renderProjectjs";
+import { ProjectRenderer} from "../display/renderProject.js";
 import { ProjectManager } from "../models/projectManager";
 import { EventEmitter } from "./eventEmitter";
 import { TaskRenderer } from "../display/renderTask";
-
+import PageRenderer from "../display/renderPage.js";
+import { Sidebar } from "../models/sidebar.js";
 
 const modal = document.getElementById("taskModal");
 const modal2 = document.getElementById("projectModal");
 const form = document.querySelector("#taskModal form");  // Form element
 const form2 = document.querySelector("#projectModal form");  // Form element
-const addBtn = document.querySelector("#taskModal .add-btn"); // Add book modal button (not yet implemented)
-const addBtn2 = document.querySelector("#projectModal .add-btn"); // Add book modal button (not yet implemented
-const closeBtns = document.querySelectorAll(".close-btn"); // Close modal button 
-const addTaskBtn = document.querySelector(".taskBtn");
-const addProjectBtn = document.querySelector(".projectBtn");
-const todayBtn = document.querySelector(".today");
+
+const addBtn = document.querySelector("#taskModal .add-btn"); 
+const addBtn2 = document.querySelector("#projectModal .add-btn"); 
+const closeBtns = document.querySelectorAll(".close-btn"); 
 const contentDom = document.querySelector(".content");
+
+const addTaskBtn = document.querySelector(".taskBtn");
 const upcomingBtn = document.querySelector(".upcoming");
 const allTasksBtn = document.querySelector(".allTask");
 const completedBtn = document.querySelector(".completed");
+const todayBtn = document.querySelector(".today");
+const addProjectBtn = document.querySelector(".projectBtn");
+const projectList = document.querySelector(".project-list");
+
+const contentTasks = document.querySelector(".task-content");
 
 function extractNumbers(string){
     return +(string.replace(/[^0-9]/g, ''))
 }
 
-const projectMng = ProjectManager();
-const emitter = EventEmitter()
-const taskRenderer = TaskRenderer( document.querySelector(".content") );
-
 let projectIdCounter = 100;
 let taskIdCounter = 200;
+let activeProject = "";
+
+const emitter = EventEmitter()
+const projectManager = ProjectManager();
+const taskRenderer = TaskRenderer( contentTasks );
+const projectRenderer = ProjectRenderer(projectList);
+const pageRenderer =  PageRenderer( contentDom, taskRenderer);
+
+const sideBar = Sidebar({
+    [addTaskBtn.innerText]: () =>{
+        modal.showModal();
+    },
+
+    [todayBtn.innerText]: () =>{
+        const todayTasks = projectManager.getTasksDueWithinDays(1);
+        pageRenderer.renderPage(activeProject.name, todayTasks);
+    },
+
+    [upcomingBtn.innerText]: () =>{
+        const upcomingTasks = projectManager.getTasksDueWithinDays(7);
+        pageRenderer.renderPage(upcomingBtn.innerText, upcomingTasks);
+    },
+
+    [allTasksBtn.innerText]: () =>{
+        const allTasks = projectManager.getAllTasks();
+        pageRenderer.renderPage(allTasksBtn.innerText, allTasks);
+    },
+
+    [completedBtn.innerText]: () => {
+        const compTasks = projectManager.getCompletedTasks();
+        pageRenderer.renderPage(completedBtn.innerText, compTasks);
+    },
+    [addProjectBtn.innerText]: () => {
+        modal2.showModal();
+    },
+    "project": () => {
+        const tasks = activeProject.getAllTasks();
+        pageRenderer.renderPage(activeProject.name, tasks);
+    }
+})
 
 //onLoad
 document.addEventListener('DOMContentLoaded', () => {
-    projectMng.addProject("Default");
-    projectMng.switchActiveProject(0);
-    renderProjectNav(projectMng, emitter);  
-    taskRenderer.renderPage(projectMng.getActiveProject().name, projectMng.getActiveProject().getTasks(), emitter);
+    const project = Project("My Tasks", projectIdCounter++);
+    projectManager.addProject(project);
+    projectManager.switchActiveProject(project.getId()); 
+    activeProject = projectManager.getActiveProject();   
+
+    sideBar.changeSelection(activeProject.name,  () => {
+        pageRenderer.renderPage(activeProject.name, project.getTasks())
+    });
+    sideBar.setCurrSelection(activeProject.name);
+    sideBar.runCurrSelection();
 });
 
-//taskBtn
-addTaskBtn.addEventListener("click", () =>{
-    modal.showModal();
-});
-
-//projectBtn
-addProjectBtn.addEventListener("click", () =>{
-    modal2.showModal();
+//sidebar buttons
+document.querySelector('.sidebar').addEventListener('click', (e) => {
+    const buttonText = e.target.textContent;
+    if (sideBar.getSelections()[buttonText]) {
+        sideBar.setCurrSelection(buttonText);
+        sideBar.runCurrSelection();
+    }
 });
 
 //modalBtns
@@ -117,24 +164,6 @@ emitter.subscribe("pageDomLoad", () => {
 
 });
 
-// Functional navs
-todayBtn.addEventListener("click", () => {
-    const todayTasks = projectMng.getTasksDueWithinDays(1);
-    taskRenderer.renderPage("Today's Tasks", todayTasks, emitter);
-});
 
-upcomingBtn.addEventListener("click", () => {
-    const upcomingTasks = projectMng.getTasksDueWithinDays(7);
-    taskRenderer.renderPage("Upcoming Tasks", upcomingTasks, emitter);
-});
 
-allTasksBtn.addEventListener("click", () => {
-    const allTasks = projectMng.getAllTasks();
-    taskRenderer.renderPage("All Your Tasks", allTasks, emitter);
-});
-
-completedBtn.addEventListener("click", () => {
-    const completedTasks = projectMng.getCompletedTasks();
-    taskRenderer.renderPage("Completed Tasks", completedTasks, emitter);
-});
 
