@@ -1,7 +1,9 @@
-class Project {
+export class Project {
+    static idCounter = 0;
+
     constructor(name, id) {
       this.name = name;
-      this.id = id;
+      this.id = ++Project.idCounter;
       this.tasks = new Map();
     }
   
@@ -25,5 +27,38 @@ class Project {
       return this.tasks.get(taskId);
     }
   }
-  
-  export { Project };
+
+export class ProjectManager {
+    constructor() {
+        this.projects = new Map();
+        this.activeProjectId = null;
+    }
+
+    addProject(project) {
+        this.projects.set(project.getId(), project);
+        return project;
+    }
+
+    removeProject(projectId) {
+        this.projects.delete(projectId);
+    }
+
+    getAllProjects() {
+        return Array.from(this.projects.values());
+    }
+
+    getProject(projectId) {
+        return this.projects.get(projectId);
+    }
+
+    switchActiveProject(projectId) {
+        if (this.projects.has(projectId)) {
+        this.activeProjectId = projectId;
+        }
+    }
+
+    getActiveProject() {
+        return this.projects.get(this.activeProjectId);
+    }
+}
+
