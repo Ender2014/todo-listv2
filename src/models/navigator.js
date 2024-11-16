@@ -6,9 +6,9 @@ export const Navigator = (function() {
     const init = (configs) =>{
         pageConfigs = configs;
     }
-
-    const addToPageConfigs = (name, callback) =>{
-        pageConfigs[name] = () => callback();
+    
+    const addToPageConfigs = (name, callback) => {
+        pageConfigs[name+""] = callback;
     };
 
     const getActivePage = () => {
@@ -41,6 +41,7 @@ export const Navigator = (function() {
     };
 
     return{
+        pageConfigs,
         init,
         addToPageConfigs,
         getActivePage,

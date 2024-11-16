@@ -15,9 +15,7 @@ export function onload(projectManager, defualtProjectName){
     projectManager.switchActiveProject(project.getId());
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
-
     UIrenderProjects(projectList, allProjects);
-    initDOMProjectsEventlisteners(projectManager);
 }
 
 //Popup handlers
@@ -47,7 +45,6 @@ export function addTaskPopup(projectManager, taskManager){
     const allProjects = projectManager.getAllProjects();
 
     UIrenderProjects(projectList, allProjects);
-    initDOMProjectsEventlisteners(projectManager);
     closeTaskPopup();
 }
 
@@ -74,7 +71,6 @@ export function addProjectPopup(projectManager){
     const allProjects = projectManager.getAllProjects();
 
     UIrenderProjects(projectList,allProjects);
-    initDOMProjectsEventlisteners(projectManager);
     closeProjectPopup();
 }
 
@@ -95,18 +91,11 @@ export function initializeNavigatorPages(taskManager){
 }
 
 export function handleNavigatorDOMclick(page){
+    
     Navigator.selectPage(page);
     Navigator.runActivePage();
 }
 
-// project navigation section
-export function handleProjectDOMClick(projectManager, projectId){
-   
-    projectManager.switchActiveProject(projectId);
-    const project = projectManager.getActiveProject();
-
-    UIdisplayPage(project.name, project.getTasks());
-}
 
 // helper functions
 export function UIdisplayPage(title, tasks){
@@ -120,3 +109,12 @@ export function UIdisplayPage(title, tasks){
     EventEmitter.publish("PageReload", title, tasks);
 };
 
+
+// project navigation section
+/*export function handleProjectDOMClick(projectManager, projectId){
+   
+    projectManager.switchActiveProject(projectId);
+    const project = projectManager.getActiveProject();
+
+    UIdisplayPage(project.name, project.getTasks());
+}*/

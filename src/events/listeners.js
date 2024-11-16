@@ -8,8 +8,8 @@ import { Navigator } from "../models/navigator";
 export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
     document.addEventListener("DOMContentLoaded", () =>{
-        DOMHandler.onload(projectManager, "Default Bitch");
         DOMHandler.initializeNavigatorPages(taskManager);
+        DOMHandler.onload(projectManager, "Default Bitch");
     });
 
     //add project popup
@@ -36,23 +36,25 @@ export function initOnloadEventlisteners(projectManager, taskManager){
         DOMHandler.addTaskPopup(projectManager, taskManager);
     });
 
-    //navigation
-    document.querySelectorAll(".nav-list button").forEach(button => {
-        button.addEventListener("click", (e) =>{
-            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id, taskManager);
-        });
-    });
-
     //subscribers
     //When page reloaded, reapply event listeners to tasks
     EventEmitter.subscribe('PageReload', (title, tasks) => initDOMTasksEventListeners(title, tasks));
+
+    //When projectDOM reloaded, reapply event listeners to projects
+    EventEmitter.subscribe('SidebarReload',(projects) => initSideBarEventListeners(projects));
 }
 
 //helper functions
-export function initDOMProjectsEventlisteners(projectManager){
-    document.querySelectorAll(".project").forEach(DOMProject => {
-        DOMProject.addEventListener("click", () => {
-            DOMHandler.handleProjectDOMClick(projectManager, +DOMProject.id);
+//Initialize sidebar event handlers
+export function initSideBarEventListeners(projects){
+    //add projects to sidebarconfig
+    projects.forEach(project =>{
+        Navigator.addToPageConfigs(project.getId(), () => UIdisplayPage(project.name, project.getTasks()));
+    });
+
+    document.querySelectorAll(".sidebar button").forEach(button => {
+        button.addEventListener("click", (e) =>{
+            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
         });
     });
 }
@@ -64,7 +66,7 @@ export function initDOMTasksEventListeners(title, tasks){
             const task = getTaskById(+e.target.parentElement.id, tasks)
             task.toggleComplete();
 
-            // Future----Integrate project clicking into sidebar.
+            // Temporary solution for now //Future----Integrate project clicking into sidebar
             if (Navigator.selectPage(title)){
                 Navigator.runActivePage();
             }
@@ -73,4 +75,12 @@ export function initDOMTasksEventListeners(title, tasks){
     });
 }
 
+/*//Initialize page event handlers
+export function initDOMProjectsEventlisteners(projectManager){
+    document.querySelectorAll(".project").forEach(DOMProject => {
+        DOMProject.addEventListener("click", () => {
+            DOMHandler.handleProjectDOMClick(projectManager, +DOMProject.id);
+        });
+    });
+}*/
 
