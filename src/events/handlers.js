@@ -3,8 +3,10 @@ import { Project } from "../models/project.js";
 import { Task } from "../models/task.js";
 import { Navigator } from "../models/navigator.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
-import { UIrenderTasks } from "../UI/UITask.js";
+import { UIrenderTasks, UIrenderTitle } from "../UI/UITask.js";
 import { initDOMProjectsEventlisteners } from "./listeners.js";
+import { initDOMTasksEventListeners } from "./listeners.js";
+import { EventEmitter } from "./emitter";
 
 //Onload handlers
 export function onload(projectManager, defualtProjectName){
@@ -85,10 +87,10 @@ export function initializeNavigatorPages(taskManager){
     const contentDom = document.querySelector(".content");
 
     Navigator.init({
-        [todayBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getTasksDueWithinDays(1)) },
-        [upcomingBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getTasksDueWithinDays(7)) },
-        [allTasksBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getAllTasks()) },
-        [completedBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getCompletedTasks()) },
+        [todayBtn.id]: () => { UIdisplayPage(todayBtn.textContent, taskManager.getTasksDueWithinDays(1)) },
+        [upcomingBtn.id]: () => { UIdisplayPage(upcomingBtn.textContent, taskManager.getTasksDueWithinDays(7)) },
+        [allTasksBtn.id]: () => { UIdisplayPage(allTasksBtn.textContent, taskManager.getAllTasks()) },
+        [completedBtn.id]: () => { UIdisplayPage(completedBtn.textContent, taskManager.getCompletedTasks()) },
     });
 }
 
@@ -97,21 +99,24 @@ export function handleNavigatorDOMclick(page){
     Navigator.runActivePage();
 }
 
+// project navigation section
 export function handleProjectDOMClick(projectManager, projectId){
-    const contentDom = document.querySelector(".content");
-
+   
     projectManager.switchActiveProject(projectId);
     const project = projectManager.getActiveProject();
 
-    UIrenderTasks(contentDom, project.getTasks());
+    UIdisplayPage(project.name, project.getTasks());
 }
 
-//Load content section
-export function loadContent(){
+// helper functions
+function UIdisplayPage(title, tasks){
+    const contentDom = document.querySelector(".content");
+    const titleDom = document.querySelector(".page-header");
     
-}
+    UIrenderTitle(titleDom, title);
+    UIrenderTasks(contentDom, tasks);
 
-//
-export function addDOMProject(){
-    
-}
+    // Notify that page reloaded
+    EventEmitter.publish("PageReload", tasks);
+};
+

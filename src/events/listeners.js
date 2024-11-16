@@ -1,4 +1,6 @@
 import * as DOMHandler from "./handlers";
+import { EventEmitter } from "./emitter";
+import { getTaskById } from "../models/task";
 
 // static elements
 export function initOnloadEventlisteners(projectManager, taskManager){
@@ -35,13 +37,16 @@ export function initOnloadEventlisteners(projectManager, taskManager){
     //navigation
     document.querySelectorAll(".nav-list button").forEach(button => {
         button.addEventListener("click", (e) =>{
-            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
-        })
+            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id, taskManager);
+        });
     });
+
+    //subscribers
+    //When page reloaded, reapply event listeners to tasks
+    EventEmitter.subscribe('PageReload', (tasks) => initDOMTasksEventListeners(tasks));
 }
 
-// dynamic elements
-// project listeners
+//helper functions
 export function initDOMProjectsEventlisteners(projectManager){
     document.querySelectorAll(".project").forEach(DOMProject => {
         DOMProject.addEventListener("click", () => {
@@ -49,4 +54,15 @@ export function initDOMProjectsEventlisteners(projectManager){
         });
     });
 }
+
+// task listeners
+export function initDOMTasksEventListeners(tasks){
+    document.querySelectorAll(".task .checkbox").forEach(checkbox => {
+        checkbox.addEventListener("click", (e) =>{
+            const task = getTaskById(+e.target.parentElement.id, tasks)
+            task.toggleComplete();
+        });
+    });
+}
+
 

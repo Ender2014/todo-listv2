@@ -30,6 +30,7 @@ export class Task {
    // Methods
    toggleComplete() {
      this.isComplete = !this.isComplete;
+     console.log(`Task ${this.id} marked ${this.isComplete}.`)
    }
 
    checkOverdue() {
@@ -89,7 +90,7 @@ export class TaskManager {
      const tasks = this.getAllTasks();
      const today = startOfToday();
      const nextDays = addDays(today, days);
- 
+   
      return tasks.filter(task =>
        isWithinInterval(new Date(task.dueDate), {
          start: today,
@@ -105,3 +106,13 @@ export class TaskManager {
  }
  
  
+// helper function
+export function getTaskById(taskId, tasks){
+   for(const task of tasks){
+      if (task.getId() === taskId){
+         console.log(`Task ${taskId} found.`);
+         return task;
+      }
+   }
+   console.log(`Task ${taskId} does not exist.`);
+}
