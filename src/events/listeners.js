@@ -3,6 +3,7 @@ import { EventEmitter } from "./emitter";
 import { getTaskById } from "../models/task";
 import { UIdisplayPage } from "./handlers";
 import { Navigator } from "../models/navigator";
+import { switchActiveProject } from "../models/project";
 
 // static elements
 export function initOnloadEventlisteners(projectManager, taskManager){
@@ -38,10 +39,10 @@ export function initOnloadEventlisteners(projectManager, taskManager){
 
     //subscribers
     //When page reloaded, reapply event listeners to tasks
-    EventEmitter.subscribe('PageReload', (title, tasks) => initDOMTasksEventListeners(title, tasks));
+    EventEmitter.subscribe('PageReload', (...args) => initDOMTasksEventListeners(args[0]));
 
     //When projectDOM reloaded, reapply event listeners to projects
-    EventEmitter.subscribe('SidebarReload',(projects) => initSideBarEventListeners(projects));
+    EventEmitter.subscribe('SidebarReload', (...args) => initSideBarEventListeners(args[0]));
 }
 
 //helper functions
@@ -49,9 +50,12 @@ export function initOnloadEventlisteners(projectManager, taskManager){
 export function initSideBarEventListeners(projects){
     //add projects to sidebarconfig
     projects.forEach(project =>{
-        Navigator.addToPageConfigs(project.getId(), () => UIdisplayPage(project.name, project.getTasks()));
+        Navigator.addToPageConfigs(project.getId(), () => {
+            switchActiveProject(project.getId());
+            UIdisplayPage(project.name, project.getTasks());
+        });
     });
-
+    // Add to each sidebar element when clicked, will set active the currently clicked navigator, and run it.
     document.querySelectorAll(".sidebar button").forEach(button => {
         button.addEventListener("click", (e) =>{
             DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
@@ -60,17 +64,12 @@ export function initSideBarEventListeners(projects){
 }
 
 // task listeners
-export function initDOMTasksEventListeners(title, tasks){
+export function initDOMTasksEventListeners(tasks){
     document.querySelectorAll(".task .checkbox").forEach(checkbox => {
         checkbox.addEventListener("click", (e) =>{
             const task = getTaskById(+e.target.parentElement.id, tasks)
             task.toggleComplete();
-
-            // Temporary solution for now //Future----Integrate project clicking into sidebar
-            if (Navigator.selectPage(title)){
-                Navigator.runActivePage();
-            }
-            UIdisplayPage(title, tasks);
+            Navigator.runActivePage();
         });
     });
 }

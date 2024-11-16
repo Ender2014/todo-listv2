@@ -1,18 +1,17 @@
 import "../resources/helper_js_files/domAssests.js"
-import { Project } from "../models/project.js";
+import { Project,switchActiveProject,getActiveProject } from "../models/project.js";
 import { Task } from "../models/task.js";
 import { Navigator } from "../models/navigator.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
 import { UIrenderTasks, UIrenderTitle } from "../UI/UITask.js";
-import { initDOMProjectsEventlisteners } from "./listeners.js";
-import { initDOMTasksEventListeners } from "./listeners.js";
 import { EventEmitter } from "./emitter";
+
 
 //Onload handlers
 export function onload(projectManager, defualtProjectName){
     const project = new Project(defualtProjectName);
     projectManager.addProject(project);
-    projectManager.switchActiveProject(project.getId());
+    switchActiveProject(project.getId());
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
     UIrenderProjects(projectList, allProjects);
@@ -91,7 +90,6 @@ export function initializeNavigatorPages(taskManager){
 }
 
 export function handleNavigatorDOMclick(page){
-    
     Navigator.selectPage(page);
     Navigator.runActivePage();
 }
@@ -106,14 +104,14 @@ export function UIdisplayPage(title, tasks){
     UIrenderTasks(contentDom, tasks);
 
     // Notify that page reloaded
-    EventEmitter.publish("PageReload", title, tasks);
+    EventEmitter.publish("PageReload",tasks);
 };
 
 
 // project navigation section
 /*export function handleProjectDOMClick(projectManager, projectId){
    
-    projectManager.switchActiveProject(projectId);
+    switchActiveProject(projectId);
     const project = projectManager.getActiveProject();
 
     UIdisplayPage(project.name, project.getTasks());

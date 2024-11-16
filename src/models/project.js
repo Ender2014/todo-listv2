@@ -61,17 +61,19 @@ export class ProjectManager {
         }
         console.log(`Project with ID ${projectId} not found.`);
     }
-
-    switchActiveProject(projectId) {
-        if (this.getProject(projectId)) {
-            this.activeProjectId = projectId;
-        }
-        console.log(`Project with ID ${this.activeProjectId} is now active.`);
-    }
-
-    getActiveProject() {
-        console.log(`Project with ID ${this.activeProjectId} is currently active.`);
-        return this.projects.get(this.activeProjectId);
-    }
 }
 
+//helper functions
+export const projectManager = new ProjectManager();
+
+export function getActiveProject(){
+    console.log(`Project with ID ${ projectManager.activeProjectId} is currently active.`);
+    return projectManager.getProject(projectManager.activeProjectId); 
+}
+
+export function switchActiveProject(projectId){
+    if ( projectManager.getProject(projectId)) {
+        projectManager.activeProjectId = projectId;
+    }
+    console.log(`Project with ID ${ projectManager.activeProjectId} is now active.`);
+}

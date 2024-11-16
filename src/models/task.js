@@ -1,5 +1,6 @@
 import { isBefore } from "date-fns";
 import { isWithinInterval, addDays, startOfToday } from 'date-fns';
+import { getActiveProject,switchActiveProject } from "./project";
 
 export class Task {
    static idCounter = 0;
@@ -44,7 +45,7 @@ export class TaskManager {
    }
  
    addTask(task) {
-     const project = this.projectManager.getActiveProject();
+     const project = getActiveProject();
      if (project) {
        project.addTask(task);  
      } else {
