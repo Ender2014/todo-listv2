@@ -102,17 +102,4 @@ export function UIdisplayPage(title, tasks){
     
     UIrenderTitle(titleDom, title);
     UIrenderTasks(contentDom, tasks);
-
-    // Notify that page reloaded
-    EventEmitter.publish("PageReload",tasks);
 };
-
-
-// project navigation section
-/*export function handleProjectDOMClick(projectManager, projectId){
-   
-    switchActiveProject(projectId);
-    const project = projectManager.getActiveProject();
-
-    UIdisplayPage(project.name, project.getTasks());
-}*/

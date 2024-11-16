@@ -30,7 +30,6 @@ export const Navigator = (function() {
         console.log(`Page ${page} does not exist!`);
     };
 
-
     const runActivePage = () => {
         if(pageConfigs[activePage]){
             console.log(`Page ${activePage} is running.`);
@@ -41,7 +40,6 @@ export const Navigator = (function() {
     };
 
     return{
-        pageConfigs,
         init,
         addToPageConfigs,
         getActivePage,

@@ -64,6 +64,7 @@ export class ProjectManager {
 }
 
 //helper functions
+//Initial declaration, switch to a new one after changed user.
 export const projectManager = new ProjectManager();
 
 export function getActiveProject(){

@@ -37,6 +37,14 @@ export function initOnloadEventlisteners(projectManager, taskManager){
         DOMHandler.addTaskPopup(projectManager, taskManager);
     });
 
+    // Add to each sidebar element when clicked, will set active the currently clicked navigator, and run it.
+    document.querySelectorAll(".sidebar button").forEach(button => {
+        //add again
+        button.addEventListener("click", (e) =>{
+            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
+        });
+    });
+
     //subscribers
     //When page reloaded, reapply event listeners to tasks
     EventEmitter.subscribe('PageReload', (...args) => initDOMTasksEventListeners(args[0]));
@@ -46,23 +54,6 @@ export function initOnloadEventlisteners(projectManager, taskManager){
 }
 
 //helper functions
-//Initialize sidebar event handlers
-export function initSideBarEventListeners(projects){
-    //add projects to sidebarconfig
-    projects.forEach(project =>{
-        Navigator.addToPageConfigs(project.getId(), () => {
-            switchActiveProject(project.getId());
-            UIdisplayPage(project.name, project.getTasks());
-        });
-    });
-    // Add to each sidebar element when clicked, will set active the currently clicked navigator, and run it.
-    document.querySelectorAll(".sidebar button").forEach(button => {
-        button.addEventListener("click", (e) =>{
-            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
-        });
-    });
-}
-
 // task listeners
 export function initDOMTasksEventListeners(tasks){
     document.querySelectorAll(".task .checkbox").forEach(checkbox => {
@@ -74,6 +65,22 @@ export function initDOMTasksEventListeners(tasks){
     });
 }
 
+//Initialize sidebar event handlers
+export function initSideBarEventListeners(projects){
+    //add projects to sidebarconfig
+    projects.forEach(project =>{
+        Navigator.addToPageConfigs(project.getId(), () => {
+            switchActiveProject(project.getId());
+            UIdisplayPage(project.name, project.getTasks());
+        });
+    });
+
+    document.querySelectorAll(".project-list button").forEach(button => {
+        button.addEventListener("click", (e) =>{
+            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
+        });
+    });   
+}
 /*//Initialize page event handlers
 export function initDOMProjectsEventlisteners(projectManager){
     document.querySelectorAll(".project").forEach(DOMProject => {

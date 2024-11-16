@@ -1,4 +1,5 @@
 import "../resources/helper_js_files/domAssests.js"
+import { EventEmitter } from "../events/emitter.js";
 
 export function UIrenderTitle(container, headertext){
     container.textContent = "";
@@ -26,10 +27,11 @@ export function UIrenderTasks(container, tasks){
         const label = document.createElement("label");
         label.setAttribute("for",`task${task.getId()}-checkbox`);
         label.textContent = task.name;
-        
+
         div.appendChild(input);
         div.appendChild(label);
 
         container.appendChild(div);
     });
+    EventEmitter.publish("PageReload",tasks);
 }
