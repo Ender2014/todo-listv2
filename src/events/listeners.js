@@ -19,10 +19,10 @@ document.querySelector(".addtask").addEventListener("click",  () => {
     DOMHandler.openTaskPopup();
 });
 document.querySelector(".taskModal .close-btn").addEventListener("click", (e) =>{
-    e.preventDefault();
     DOMHandler.closeTaskPopup;
 });
 document.querySelector(".taskModal .add-btn").addEventListener("click",() => {
+    e.preventDefault();
     DOMHandler.addTaskPopup(projectManager);
 });
 

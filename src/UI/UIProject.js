@@ -3,7 +3,7 @@ import folderIcon from "../resources/images/folder-outline.svg";
 
 // can be generalized into a renderer
 export function UIrenderProjects(container, projects){
-
+    container.textContent = "";
     projects.forEach(project => {
         const li = document.createElement("li");
 
