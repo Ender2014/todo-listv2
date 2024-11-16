@@ -1,6 +1,6 @@
 import { isWithinInterval, addDays, startOfToday } from 'date-fns';
 
-class ProjectController {
+class ProjectTaskController {
     constructor() {
       this.idCounter = 0;
       this.activeProjectId = null;
@@ -71,5 +71,5 @@ class ProjectController {
     }
   }
   
-  export { ProjectController };
+  export { ProjectTaskController };
   
