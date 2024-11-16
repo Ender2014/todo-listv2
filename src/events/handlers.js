@@ -77,33 +77,19 @@ export function addProjectPopup(projectManager){
 }
 
 // navigation section
-export function initializeNavigatorPages(){
+export function initializeNavigatorPages(taskManager){
     const todayBtn = document.getElementById("today");
     const upcomingBtn = document.getElementById("upcoming");
     const allTasksBtn = document.getElementById("allTask");
     const completedBtn = document.getElementById("completed");
+    const contentDom = document.querySelector(".content");
+
     Navigator.init({
-        [todayBtn.id]: () => {console.log("Today")},
-        [upcomingBtn.id]: () => {console.log("Upcoming")},
-        [allTasksBtn.id]: () => {console.log("All")},
-        [completedBtn.id]: () => {console.log("Completed")},
+        [todayBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getTasksDueWithinDays(1)) },
+        [upcomingBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getTasksDueWithinDays(7)) },
+        [allTasksBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getAllTasks()) },
+        [completedBtn.id]: () => { UIrenderTasks(contentDom, taskManager.getCompletedTasks()) },
     });
-}
-
-export function handleDisplayTodayTasks(taskManager){
-    const tasks = taskManager.getTasksDueWithinDays(1);
-}
-
-export function handleDisplayUpcomingTasks(taskManager){
-    const tasks = taskManager.getTasksDueWithinDays(7);
-}
-
-export function handleDisplayAllTasks(taskManager){
-    const tasks = taskManager.getAllTasks();
-}
-
-export function handleDisplayCompletedTasks(taskManager){
-    const tasks = taskManager.getAllProjects()
 }
 
 export function handleNavigatorDOMclick(page){
@@ -112,9 +98,13 @@ export function handleNavigatorDOMclick(page){
 }
 
 export function handleProjectDOMClick(projectManager, projectId){
-    projectManager.switchActiveProject(projectId);
-}
+    const contentDom = document.querySelector(".content");
 
+    projectManager.switchActiveProject(projectId);
+    const project = projectManager.getActiveProject();
+
+    UIrenderTasks(contentDom, project.getTasks());
+}
 
 //Load content section
 export function loadContent(){

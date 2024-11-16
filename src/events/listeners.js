@@ -5,7 +5,7 @@ export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
     document.addEventListener("DOMContentLoaded", () =>{
         DOMHandler.onload(projectManager, "Default Bitch");
-        DOMHandler.initializeNavigatorPages();
+        DOMHandler.initializeNavigatorPages(taskManager);
     });
 
     //add project popup
@@ -44,7 +44,6 @@ export function initOnloadEventlisteners(projectManager, taskManager){
 // project listeners
 export function initDOMProjectsEventlisteners(projectManager){
     document.querySelectorAll(".project").forEach(DOMProject => {
-        console.log(`Added listener to ${DOMProject.textContent}.`)
         DOMProject.addEventListener("click", () => {
             DOMHandler.handleProjectDOMClick(projectManager, +DOMProject.id);
         });
