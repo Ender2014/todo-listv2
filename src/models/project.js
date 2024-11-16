@@ -1,7 +1,7 @@
 export class Project {
     static idCounter = 0;
 
-    constructor(name, id) {
+    constructor(name) {
       this.name = name;
       this.id = ++Project.idCounter;
       this.tasks = new Map();

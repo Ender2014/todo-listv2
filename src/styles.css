@@ -200,23 +200,24 @@ dialog::backdrop{
     color: var(--text-primary-color);
 }
 
-.sidebar img, .projects img, .task img{
+.sidebar img{
     filter: invert(1);
     width: 1.75em;
     height:auto;
 }
 
-.nav-list, .projects, .project-list{
+.column-flex{
     display: flex;
     flex-direction: column;
     gap: var(--small-padding)
 }
 
-.taskBtn, .header, .nav-list li button, .project-list li button,.projectBtn{
+.row-flex{
     display:flex;
     align-items: center;
     gap: var(--small-padding);
 }
+
 
 /* SideBar - End*/
 /*------------------------------------------------------------*/
