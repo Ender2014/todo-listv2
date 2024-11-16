@@ -1,17 +1,11 @@
 import * as DOMHandler from "./handlers";
-import { Navigator } from "../models/navigator";
 
 // static elements
 export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
     document.addEventListener("DOMContentLoaded", () =>{
         DOMHandler.onload(projectManager, "Default Bitch");
-        Navigator.init({
-            "Today": () => {console.log("Today")},
-            "Upcoming": () => {console.log("Upcoming")},
-            "All": () => {console.log("All")},
-            "Completed": () => {console.log("Completed")},
-        });
+        DOMHandler.initializeNavigatorPages();
     });
 
     //add project popup
@@ -39,7 +33,11 @@ export function initOnloadEventlisteners(projectManager, taskManager){
     });
 
     //navigation
-
+    document.querySelectorAll(".nav-list button").forEach(button => {
+        button.addEventListener("click", (e) =>{
+            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
+        })
+    });
 }
 
 // dynamic elements

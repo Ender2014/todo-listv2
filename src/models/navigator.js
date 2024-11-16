@@ -25,17 +25,19 @@ export const Navigator = (function() {
         if(pageConfigs[page]){
             activePage = page;
             console.log(`Page ${page} is selected.`);
+            return;
         }
-        console.log(`Page does not exist!`);
+        console.log(`Page ${page} does not exist!`);
     };
 
 
     const runActivePage = () => {
         if(pageConfigs[activePage]){
-            pageConfigs[page]();
-            console.log(`Page ${page} is running.`);
+            console.log(`Page ${activePage} is running.`);
+            pageConfigs[activePage]();
+            return;
         }
-        console.log(`Page does not exist!`);
+        console.log(`Page ${activePage} cannot be run!`);
     };
 
     return{

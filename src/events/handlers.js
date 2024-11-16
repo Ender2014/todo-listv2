@@ -1,7 +1,9 @@
 import "../resources/helper_js_files/domAssests.js"
 import { Project } from "../models/project.js";
 import { Task } from "../models/task.js";
+import { Navigator } from "../models/navigator.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
+import { UIrenderTasks } from "../UI/UITask.js";
 import { initDOMProjectsEventlisteners } from "./listeners.js";
 
 //Onload handlers
@@ -75,8 +77,38 @@ export function addProjectPopup(projectManager){
 }
 
 // navigation section
-export function handleNavigatorDOMclick(projectManager, taskManager){
-    
+export function initializeNavigatorPages(){
+    const todayBtn = document.getElementById("today");
+    const upcomingBtn = document.getElementById("upcoming");
+    const allTasksBtn = document.getElementById("allTask");
+    const completedBtn = document.getElementById("completed");
+    Navigator.init({
+        [todayBtn.id]: () => {console.log("Today")},
+        [upcomingBtn.id]: () => {console.log("Upcoming")},
+        [allTasksBtn.id]: () => {console.log("All")},
+        [completedBtn.id]: () => {console.log("Completed")},
+    });
+}
+
+export function handleDisplayTodayTasks(taskManager){
+    const tasks = taskManager.getTasksDueWithinDays(1);
+}
+
+export function handleDisplayUpcomingTasks(taskManager){
+    const tasks = taskManager.getTasksDueWithinDays(7);
+}
+
+export function handleDisplayAllTasks(taskManager){
+    const tasks = taskManager.getAllTasks();
+}
+
+export function handleDisplayCompletedTasks(taskManager){
+    const tasks = taskManager.getAllProjects()
+}
+
+export function handleNavigatorDOMclick(page){
+    Navigator.selectPage(page);
+    Navigator.runActivePage();
 }
 
 export function handleProjectDOMClick(projectManager, projectId){
