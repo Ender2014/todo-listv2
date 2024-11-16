@@ -1,84 +1,75 @@
 import { isWithinInterval, addDays, startOfToday } from 'date-fns';
 
-function ProjectController(){
-    let idCounter = 0;
-    let activeProjectId = null;
-    const projects = new Map();
-
-    // Project related methodss
-    const getAllProjects = () => Array.from(projects.values());
-
-    const addProject = (project) => {
-        projects.set(project.getId(), project);
-        return project;
-    };
-
-    const getProject = (id) => projects.get(id);
-
-    const getTaskAcrossProjects = (taskId) => {
-        for (const project of projects.values()) {
-            const task = project.getTask(taskId);
-            if (task) {
-                return task;
-            }
+class ProjectController {
+    constructor() {
+      this.idCounter = 0;
+      this.activeProjectId = null;
+      this.projects = new Map();
+    }
+  
+    // Project-related methods
+    getAllProjects() {
+      return Array.from(this.projects.values());
+    }
+  
+    addProject(project) {
+      this.projects.set(project.getId(), project);
+      return project;
+    }
+  
+    getProject(id) {
+      return this.projects.get(id);
+    }
+  
+    getTaskAcrossProjects(taskId) {
+      for (const project of this.projects.values()) {
+        const task = project.getTask(taskId);
+        if (task) {
+          return task;
         }
-        return null; 
-    };
-
-    const removeProject = (id) => projects.delete(id);
-
-    const getActiveProject = () => projects.get(activeProjectId);
-
-    const switchActiveProject = (id) => activeProjectId = id;
-
+      }
+      return null;
+    }
+  
+    removeProject(id) {
+      this.projects.delete(id);
+    }
+  
+    getActiveProject() {
+      return this.projects.get(this.activeProjectId);
+    }
+  
+    switchActiveProject(id) {
+      this.activeProjectId = id;
+    }
+  
     // Task-related methods
-    const getAllTasks = () => {
-        const tasks = [];
-        for (const project of projects.values()) {
-            tasks.push(...project.getTasks().values());
-        }
-        return tasks;
-    };
-
-    const getTasksDueWithinDays = (days) => {
-        const tasks = getAllTasks();
-        const today = startOfToday();
-        const nextDays = addDays(today, days);
-        const tasksDueNextDays = tasks.filter(task =>
-            isWithinInterval(new Date(task.dueDate), {
-              start: today,
-              end: nextDays,
-            })
-          );
-        return tasksDueNextDays;
+    getAllTasks() {
+      const tasks = [];
+      for (const project of this.projects.values()) {
+        tasks.push(...project.getTasks());
+      }
+      return tasks;
     }
-
-    const getCompletedTasks = () => {
-        const tasks = getAllTasks();
-        const completedTasks = tasks.filter((task) => {
-            return task.getIsComplete();
-        });
-
-        return completedTasks;
+  
+    getTasksDueWithinDays(days) {
+      const tasks = this.getAllTasks();
+      const today = startOfToday();
+      const nextDays = addDays(today, days);
+  
+      return tasks.filter(task =>
+        isWithinInterval(new Date(task.dueDate), {
+          start: today,
+          end: nextDays,
+        })
+      );
     }
-    
-    return{
-        getAllProjects,
-        getProject,
-        addProject,
-        removeProject,
-        getAllTasks,
-        getTasksDueWithinDays,
-        getCompletedTasks,
-        getActiveProject,
-        switchActiveProject,
-        getTaskAcrossProjects
+  
+    getCompletedTasks() {
+      const tasks = this.getAllTasks();
+      return tasks.filter(task => task.getIsComplete());
     }
-}
-
-//helper functions
-
-
-export{
-    ProjectManager,
-}
+  }
+  
+  export { ProjectController };
+  

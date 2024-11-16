@@ -1,7 +1,7 @@
 /* CSS Reset - Start*/
 @font-face{
     font-family: Roboto;
-    src: url(../recources/roboto-regular-webfont.woff2);
+    src: url(../src/resources/roboto-regular-webfont.woff2);
 }
 
 *{

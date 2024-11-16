@@ -1,30 +1,28 @@
 
-function Task(title, id, desc, dueDate, priority){
-   const validDueDate = dueDate ? new Date(dueDate) : null;
-
-   let isComplete = false;
-
-   const taskId = id;
-
-   const getId = () => id;
-
-   const getIsComplete = () => isComplete;
-
-   const switchIsComplete = () => isComplete = !isComplete;
-
-   return{
-      title,  
-      desc, 
-      dueDate: 
-      validDueDate, 
-      priority,
-      isComplete,
-      getIsComplete,
-      getId,
-      switchIsComplete,
+class Task {
+   constructor(title, id, desc, dueDate, priority) {
+     this.title = title;
+     this.id = id;
+     this.desc = desc;
+     this.dueDate = dueDate ? new Date(dueDate) : null; // Validated due date
+     this.priority = priority;
+     this.isComplete = false; // Default to incomplete
    }
-}
-
-export{
-   Task
-}
+ 
+   // Getters
+   getId() {
+     return this.id;
+   }
+ 
+   getIsComplete() {
+     return this.isComplete;
+   }
+ 
+   // Methods
+   switchIsComplete() {
+     this.isComplete = !this.isComplete;
+   }
+ }
+ 
+ export { Task };
+ 

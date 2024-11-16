@@ -1,29 +1,29 @@
-function Project(name, id){
-    
-    const tasks = new Map();
-
-    const getId = () => id;
-
-    const getTasks = () => Array.from(tasks.values());
-
-    const addTask = (task) => tasks.set(task.getId(), task);
-
-    const removeTask = (taskId) => tasks.delete(taskId);
-
-    const getTask = (taskId) => tasks.get(taskId);
-
-    return{
-        name,
-        getId,
-        getTasks,
-        addTask,
-        removeTask,
-        getTask
+class Project {
+    constructor(name, id) {
+      this.name = name;
+      this.id = id;
+      this.tasks = new Map();
     }
-}
-
-export{
-    Project
-}
-
-
+  
+    getId() {
+      return this.id;
+    }
+  
+    getTasks() {
+      return Array.from(this.tasks.values());
+    }
+  
+    addTask(task) {
+      this.tasks.set(task.getId(), task);
+    }
+  
+    removeTask(taskId) {
+      this.tasks.delete(taskId);
+    }
+  
+    getTask(taskId) {
+      return this.tasks.get(taskId);
+    }
+  }
+  
+  export { Project };
