@@ -35,12 +35,19 @@ export class ProjectManager {
     }
 
     addProject(project) {
-        this.projects.set(project.getId(), project);
-        return project;
+        if(project){
+            this.projects.set(project.getId(), project);
+            return project;
+        }
+        console.log(`Project ${project} cannot be added.`);
     }
 
     removeProject(projectId) {
-        this.projects.delete(projectId);
+        if(this.getProject(projectId)){
+            this.projects.delete(projectId);
+            return;
+        }
+        console.log(`Project with ID ${projectId} cannot be removed.`);
     }
 
     getAllProjects() {
@@ -48,7 +55,11 @@ export class ProjectManager {
     }
 
     getProject(projectId) {
-        return this.projects.get(projectId);
+        const project = this.projects.get(projectId);
+        if (project){
+            return project;
+        }
+        console.log(`Project with ID ${projectId} not found.`);
     }
 
     switchActiveProject(projectId) {
@@ -58,6 +69,7 @@ export class ProjectManager {
     }
 
     getActiveProject() {
+        console.log(`Project with ID ${activeProjectId} is currently active.`);
         return this.projects.get(this.activeProjectId);
     }
 }

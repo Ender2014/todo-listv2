@@ -1,5 +1,6 @@
 import "../resources/helper_js_files/domAssests.js"
 import { Project } from "../models/project.js";
+import { Task } from "../models/task.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
 
 //Popup handlers
@@ -15,12 +16,20 @@ export function closeTaskPopup(){
     form.reset();
 }
 
-export function addTaskPopup(){
+export function addTaskPopup(projectManager, taskManager){
     const form = document.querySelector(".taskModal form");
     const title = form.elements['title'].value; 
     const desc = form.elements['desc'].value;
     const dueDate = form.elements['dueDate'].value;
     const priority = form.elements['priority'].value;
+
+    const task = new Task(title, projectManager.getActiveProject().getId(), dueDate, priority);
+    taskManager.addTask(task);
+
+    const projectList = document.querySelector(".project-list");
+    const allProjects = projectManager.getAllProjects();
+
+    UIrenderProjects(projectList, allProjects);
     closeTaskPopup()
 }
 
@@ -43,7 +52,7 @@ export function addProjectPopup(projectManager){
     const project = new Project(title);
     projectManager.addProject(project);
     
-    const projectList = document.querySelector(".project-list")
+    const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
 
     UIrenderProjects(projectList,allProjects)

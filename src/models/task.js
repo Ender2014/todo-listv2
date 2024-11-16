@@ -4,7 +4,7 @@ import { isWithinInterval, addDays, startOfToday } from 'date-fns';
 export class Task {
    static idCounter = 0;
 
-   constructor(name, desc, dueDate, priority) {
+   constructor(name, desc, projectId, dueDate, priority) {
      this.name = name;
      this.id = ++Task.idCounter;
      this.projectId = projectId;

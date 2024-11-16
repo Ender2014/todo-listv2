@@ -18,8 +18,12 @@ export function UIrenderProjects(container, projects){
         const h3 = document.createElement("h3");
         h3.textContent = project.name;
 
+        const span = document.createElement("span");
+        span.textContent = `(${project.getTasks().length})`;
+
         button.appendChild(img);
         button.appendChild(h3);
+        button.appendChild(span);
 
         li.appendChild(button);
 
