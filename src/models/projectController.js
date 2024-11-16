@@ -1,6 +1,6 @@
 import { isWithinInterval, addDays, startOfToday } from 'date-fns';
 
-function ProjectManager(){
+function ProjectController(){
     let idCounter = 0;
     let activeProjectId = null;
     const projects = new Map();

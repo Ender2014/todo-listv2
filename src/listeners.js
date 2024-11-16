@@ -1,0 +1,2 @@
+import "./resources/domAssests.js"
+

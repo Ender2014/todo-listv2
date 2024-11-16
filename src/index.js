@@ -1,3 +1,3 @@
-import "./scss/styles.css";
-import "./events/eventListeners.js"
+import "./styles.css";
+import "./listeners.js"
 

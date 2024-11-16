@@ -12,5 +12,3 @@ const contentDom = document.querySelector(".content");
 const upcomingBtn = document.querySelector(".upcoming");
 const allTasksBtn = document.querySelector(".allTask");
 const completedBtn = document.querySelector(".completed");
-
-
