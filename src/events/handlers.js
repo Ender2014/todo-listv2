@@ -2,16 +2,18 @@ import "../resources/helper_js_files/domAssests.js"
 import { Project } from "../models/project.js";
 import { Task } from "../models/task.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
+import { initDOMProjectsEventlisteners } from "./listeners.js";
 
 //Onload handlers
 export function onload(projectManager, defualtProjectName){
     const project = new Project(defualtProjectName);
     projectManager.addProject(project);
-    
+    projectManager.switchActiveProject(project.getId());
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
 
     UIrenderProjects(projectList, allProjects);
+    initDOMProjectsEventlisteners(projectManager);
 }
 
 //Popup handlers
@@ -41,7 +43,8 @@ export function addTaskPopup(projectManager, taskManager){
     const allProjects = projectManager.getAllProjects();
 
     UIrenderProjects(projectList, allProjects);
-    closeTaskPopup()
+    initDOMProjectsEventlisteners(projectManager);
+    closeTaskPopup();
 }
 
 export function openProjectPopup(){
@@ -66,8 +69,18 @@ export function addProjectPopup(projectManager){
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
 
-    UIrenderProjects(projectList,allProjects)
+    UIrenderProjects(projectList,allProjects);
+    initDOMProjectsEventlisteners(projectManager);
     closeProjectPopup();
+}
+
+// navigation section
+export function handleNavigatorDOMclick(projectManager, taskManager){
+    
+}
+
+export function handleProjectDOMClick(projectManager, projectId){
+    projectManager.switchActiveProject(projectId);
 }
 
 

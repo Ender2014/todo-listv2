@@ -63,9 +63,10 @@ export class ProjectManager {
     }
 
     switchActiveProject(projectId) {
-        if (this.projects.has(projectId)) {
-        this.activeProjectId = projectId;
+        if (this.getProject(projectId)) {
+            this.activeProjectId = projectId;
         }
+        console.log(`Project with ID ${this.activeProjectId} is now active.`);
     }
 
     getActiveProject() {
