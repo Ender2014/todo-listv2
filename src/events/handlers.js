@@ -109,7 +109,7 @@ export function handleProjectDOMClick(projectManager, projectId){
 }
 
 // helper functions
-function UIdisplayPage(title, tasks){
+export function UIdisplayPage(title, tasks){
     const contentDom = document.querySelector(".content");
     const titleDom = document.querySelector(".page-header");
     
@@ -117,6 +117,6 @@ function UIdisplayPage(title, tasks){
     UIrenderTasks(contentDom, tasks);
 
     // Notify that page reloaded
-    EventEmitter.publish("PageReload", tasks);
+    EventEmitter.publish("PageReload", title, tasks);
 };
 

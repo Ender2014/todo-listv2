@@ -14,9 +14,9 @@ export const EventEmitter = (function() {
         events[event] = events.filter((listener) => listener !== callback)
     }
 
-    const publish = (event, data) => {
+    const publish = (event, ...args) => {
         if (!events[event] || events[event].length === 0) return;
-        events[event].forEach(callback => callback(data));
+        events[event].forEach(callback => callback(...args));
     }
 
     return{
