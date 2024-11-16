@@ -69,7 +69,7 @@ export class ProjectManager {
     }
 
     getActiveProject() {
-        console.log(`Project with ID ${activeProjectId} is currently active.`);
+        console.log(`Project with ID ${this.activeProjectId} is currently active.`);
         return this.projects.get(this.activeProjectId);
     }
 }

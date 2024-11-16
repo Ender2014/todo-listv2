@@ -3,6 +3,17 @@ import { Project } from "../models/project.js";
 import { Task } from "../models/task.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
 
+//Onload handlers
+export function onload(projectManager, defualtProjectName){
+    const project = new Project(defualtProjectName);
+    projectManager.addProject(project);
+    
+    const projectList = document.querySelector(".project-list");
+    const allProjects = projectManager.getAllProjects();
+
+    UIrenderProjects(projectList, allProjects);
+}
+
 //Popup handlers
 export function openTaskPopup(){
     const popup = document.querySelector(".taskModal");
@@ -23,7 +34,7 @@ export function addTaskPopup(projectManager, taskManager){
     const dueDate = form.elements['dueDate'].value;
     const priority = form.elements['priority'].value;
 
-    const task = new Task(title, projectManager.getActiveProject().getId(), dueDate, priority);
+    const task = new Task(title, desc, dueDate, priority);
     taskManager.addTask(task);
 
     const projectList = document.querySelector(".project-list");
@@ -58,6 +69,7 @@ export function addProjectPopup(projectManager){
     UIrenderProjects(projectList,allProjects)
     closeProjectPopup();
 }
+
 
 //Load content section
 export function loadContent(){
