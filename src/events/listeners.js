@@ -1,11 +1,7 @@
 import * as DOMHandler from "./handlers";
 import { EventEmitter } from "./emitter";
-import { getTaskById } from "../models/task";
-import { UIdisplayPage } from "./handlers";
-import { Navigator } from "../models/navigator";
-import { switchActiveProject } from "../models/project";
 
-// static elements
+
 export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
     document.addEventListener("DOMContentLoaded", () =>{
@@ -46,47 +42,11 @@ export function initOnloadEventlisteners(projectManager, taskManager){
     });
 
     //subscribers
-    //When page reloaded, reapply event listeners to tasks
-    EventEmitter.subscribe('PageReload', (...args) => initDOMTasksEventListeners(args[0]));
+    //When page reloaded, re-initialize event listeners to tasks
+    EventEmitter.subscribe('PageReload', (...args) => DOMHandler.initDOMTasksEventListeners(args[0]));
 
-    //When projectDOM reloaded, reapply event listeners to projects
-    EventEmitter.subscribe('SidebarReload', (...args) => initSideBarEventListeners(args[0]));
+    //When projectDOM reloaded, re-initialize event listeners to projects
+    EventEmitter.subscribe('SidebarReload', (...args) => DOMHandler.initSideBarEventListeners(args[0]));
 }
 
-//helper functions
-// task listeners
-export function initDOMTasksEventListeners(tasks){
-    document.querySelectorAll(".task .checkbox").forEach(checkbox => {
-        checkbox.addEventListener("click", (e) =>{
-            const task = getTaskById(+e.target.parentElement.id, tasks)
-            task.toggleComplete();
-            Navigator.runActivePage();
-        });
-    });
-}
-
-//Initialize sidebar event handlers
-export function initSideBarEventListeners(projects){
-    //add projects to sidebarconfig
-    projects.forEach(project =>{
-        Navigator.addToPageConfigs(project.getId(), () => {
-            switchActiveProject(project.getId());
-            UIdisplayPage(project.name, project.getTasks());
-        });
-    });
-
-    document.querySelectorAll(".project-list button").forEach(button => {
-        button.addEventListener("click", (e) =>{
-            DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
-        });
-    });   
-}
-/*//Initialize page event handlers
-export function initDOMProjectsEventlisteners(projectManager){
-    document.querySelectorAll(".project").forEach(DOMProject => {
-        DOMProject.addEventListener("click", () => {
-            DOMHandler.handleProjectDOMClick(projectManager, +DOMProject.id);
-        });
-    });
-}*/
 

@@ -4,8 +4,7 @@ import { Task } from "../models/task.js";
 import { Navigator } from "../models/navigator.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
 import { UIrenderTasks, UIrenderTitle } from "../UI/UITask.js";
-import { EventEmitter } from "./emitter";
-
+import { getTaskById } from "../models/task";
 
 //Onload handlers
 export function onload(projectManager, defualtProjectName){
@@ -103,3 +102,33 @@ export function UIdisplayPage(title, tasks){
     UIrenderTitle(titleDom, title);
     UIrenderTasks(contentDom, tasks);
 };
+
+// Initialize tasks event listeners
+export function initDOMTasksEventListeners(tasks){
+    document.querySelectorAll(".task .checkbox").forEach(checkbox => {
+        checkbox.addEventListener("click", (e) =>{
+            const task = getTaskById(+e.target.parentElement.id, tasks)
+            task.toggleComplete();
+            Navigator.runActivePage();
+        });
+    });
+}
+
+// Initialize project event listeners
+export function initSideBarEventListeners(projects){
+    //add projects to sidebarconfig
+    projects.forEach(project =>{
+        Navigator.addToPageConfigs(project.getId(), () => {
+            switchActiveProject(project.getId());
+            UIdisplayPage(project.name, project.getTasks());
+        });
+    });
+
+    document.querySelectorAll(".project-list button").forEach(button => {
+        button.addEventListener("click", (e) =>{
+            handleNavigatorDOMclick(e.currentTarget.id);
+        });
+    });   
+}
+
+
