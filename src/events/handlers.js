@@ -107,7 +107,7 @@ export function initDOMTasksEventListeners(task, taskManager, projectManager){
                 task.toggleComplete();
 
             } else if (e.currentTarget.id === `task${task.getId()}-utility0`){
-                    
+                
     
             } else if (e.currentTarget.id === `task${task.getId()}-utility1`){
                 taskManager.removeTask(task.getId());
