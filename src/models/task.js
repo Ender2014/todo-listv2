@@ -106,7 +106,6 @@ export class TaskManager {
    }
  }
  
- 
 // helper function
 export function getTaskById(taskId, tasks){
    for(const task of tasks){

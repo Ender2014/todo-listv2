@@ -1,29 +1,23 @@
-export const EventEmitter = (function() {
-    const events = {};
+export class EventEmitter {
+    static events = {};
 
-    const subscribe = (event, callback) => {
-        if(!events[event]){
-            events[event] = [];
+    static subscribe(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
         }
-        events[event].push(callback);
+        this.events[event].push(callback);
     }
 
-    const unsubscribe = (event, callback) => {
-        if(!events[event]) return;
+    static unsubscribe(event, callback) {
+        if (!this.events[event]) return;
 
-        events[event] = events.filter((listener) => listener !== callback)
+        this.events[event] = this.events[event].filter((listener) => listener !== callback);
     }
 
-    const publish = (event, ...args) => {
-        if (!events[event] || events[event].length === 0) return;
-        events[event].forEach(callback => callback(...args));
-    }
+    static publish(event, ...args) {
+        if (!this.events[event] || this.events[event].length === 0) return;
 
-    return{
-        subscribe,
-        unsubscribe,
-        publish
+        this.events[event].forEach(callback => callback(...args));
     }
-})();
-
+}
 //helper functions

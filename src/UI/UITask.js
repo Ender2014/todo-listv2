@@ -35,3 +35,14 @@ export function UIrenderTasks(container, tasks){
     });
     EventEmitter.publish("PageReload",tasks);
 }
+
+
+// helper functions
+//---------------------------------------------------------------//
+export function UIdisplayPage(title, tasks){
+    const contentDom = document.querySelector(".content");
+    const titleDom = document.querySelector(".page-header");
+    
+    UIrenderTitle(titleDom, title);
+    UIrenderTasks(contentDom, tasks);
+};

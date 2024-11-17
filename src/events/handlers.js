@@ -1,12 +1,13 @@
 import "../resources/helper_js_files/domAssests.js"
-import { Project,switchActiveProject,getActiveProject } from "../models/project.js";
+import { Project,switchActiveProject } from "../models/project.js";
 import { Task } from "../models/task.js";
 import { Navigator } from "../models/navigator.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
-import { UIrenderTasks, UIrenderTitle } from "../UI/UITask.js";
+import { UIdisplayPage} from "../UI/UITask.js";
 import { getTaskById } from "../models/task";
 
 //Onload handlers
+//---------------------------------------------------------------//
 export function onload(projectManager, defualtProjectName){
     const project = new Project(defualtProjectName);
     projectManager.addProject(project);
@@ -17,6 +18,7 @@ export function onload(projectManager, defualtProjectName){
 }
 
 //Popup handlers
+//---------------------------------------------------------------//
 export function openTaskPopup(){
     const popup = document.querySelector(".taskModal");
     popup.showModal();
@@ -42,6 +44,7 @@ export function addTaskPopup(projectManager, taskManager){
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
 
+    Navigator.runActivePage();
     UIrenderProjects(projectList, allProjects);
     closeTaskPopup();
 }
@@ -72,14 +75,15 @@ export function addProjectPopup(projectManager){
     closeProjectPopup();
 }
 
-// navigation section
+// navigation handlers
+//---------------------------------------------------------------//
 export function initializeNavigatorPages(taskManager){
     const todayBtn = document.getElementById("today");
     const upcomingBtn = document.getElementById("upcoming");
     const allTasksBtn = document.getElementById("allTask");
     const completedBtn = document.getElementById("completed");
     const contentDom = document.querySelector(".content");
-
+    // Add these pages with DOMid and their callbacks to the navigator
     Navigator.init({
         [todayBtn.id]: () => { UIdisplayPage(todayBtn.textContent, taskManager.getTasksDueWithinDays(1)) },
         [upcomingBtn.id]: () => { UIdisplayPage(upcomingBtn.textContent, taskManager.getTasksDueWithinDays(7)) },
@@ -87,22 +91,14 @@ export function initializeNavigatorPages(taskManager){
         [completedBtn.id]: () => { UIdisplayPage(completedBtn.textContent, taskManager.getCompletedTasks()) },
     });
 }
-
-export function handleNavigatorDOMclick(page){
-    Navigator.selectPage(page);
+// Select the current page based on its id and run its callback function.
+export function handleNavigatorDOMclick(DOMId){
+    Navigator.selectPage(DOMId);
     Navigator.runActivePage();
 }
 
-
-// helper functions
-export function UIdisplayPage(title, tasks){
-    const contentDom = document.querySelector(".content");
-    const titleDom = document.querySelector(".page-header");
-    
-    UIrenderTitle(titleDom, title);
-    UIrenderTasks(contentDom, tasks);
-};
-
+// Adding eventlistener handlers
+//---------------------------------------------------------------//
 // Initialize tasks event listeners
 export function initDOMTasksEventListeners(tasks){
     document.querySelectorAll(".task .checkbox").forEach(checkbox => {
@@ -113,6 +109,7 @@ export function initDOMTasksEventListeners(tasks){
         });
     });
 }
+
 
 // Initialize project event listeners
 export function initSideBarEventListeners(projects){
@@ -130,5 +127,7 @@ export function initSideBarEventListeners(projects){
         });
     });   
 }
+
+
 
 
