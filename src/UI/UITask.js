@@ -1,5 +1,6 @@
 import "../resources/helper_js_files/domAssests.js"
-import { EventEmitter } from "../events/emitter.js";
+import folderIcon from "../resources/images/folder-outline.svg";
+import { initDOMTasksEventListeners } from "../events/handlers.js";
 
 export function UIrenderTitle(container, headertext){
     container.textContent = "";
@@ -17,25 +18,47 @@ export function UIrenderTasks(container, tasks){
         div.classList.add("task");
         div.id = task.getId();
 
+        //left side
+        const left = document.createElement("div");
+        left.classList.add("row-flex");
+
         const input = document.createElement("input");
         input.setAttribute("type", "checkbox");
         input.setAttribute("name", `task${task.getId()}-checkbox`);
-        input.classList.add("checkbox");
+        input.classList.add("checkbox", "UIElement");
         input.id = `task${task.getId()}-checkbox`;
         input.checked = task.getIsComplete();
         
-        const label = document.createElement("label");
-        label.setAttribute("for",`task${task.getId()}-checkbox`);
+        const label = document.createElement("span");
         label.textContent = task.name;
 
-        div.appendChild(input);
-        div.appendChild(label);
+        left.appendChild(input);
+        left.appendChild(label);
+
+        //right side
+        const right = document.createElement("div");
+        right.classList.add("row-flex");
+        for(let i =0; i<3; i++){
+            const button = document.createElement("button");
+            button.setAttribute("type", "button");
+            button.classList.add("utility", "UIElement", "row-flex")
+            button.id = `task${task.getId()}-utility${i}`;
+
+            const img = document.createElement("img");
+            img.src = folderIcon;
+            button.appendChild(img);
+            
+            right.appendChild(button);
+        }
+       
+        div.appendChild(left);
+        div.appendChild(right);
 
         container.appendChild(div);
+        initDOMTasksEventListeners(task)
     });
-    EventEmitter.publish("PageReload",tasks);
+   
 }
-
 
 // helper functions
 //---------------------------------------------------------------//

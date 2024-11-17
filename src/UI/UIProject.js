@@ -1,6 +1,6 @@
 import "../resources/helper_js_files/domAssests.js";
 import folderIcon from "../resources/images/folder-outline.svg";
-import { EventEmitter } from "../events/emitter.js";
+import { initSideBarEventListeners } from "../events/handlers.js";
 
 // can be generalized into a renderer
 export function UIrenderProjects(container, projects){
@@ -27,9 +27,7 @@ export function UIrenderProjects(container, projects){
         button.appendChild(span);
 
         li.appendChild(button);
-
+        initSideBarEventListeners(project, button);
         container.appendChild(li);
     });
-    
-    EventEmitter.publish("SidebarReload", projects);
 }

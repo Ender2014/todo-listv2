@@ -3,8 +3,7 @@ import { Project,switchActiveProject } from "../models/project.js";
 import { Task } from "../models/task.js";
 import { Navigator } from "../models/navigator.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
-import { UIdisplayPage} from "../UI/UITask.js";
-import { getTaskById } from "../models/task";
+import { UIdisplayPage } from "../UI/UITask.js";
 
 //Onload handlers
 //---------------------------------------------------------------//
@@ -99,32 +98,31 @@ export function handleNavigatorDOMclick(DOMId){
 
 // Adding eventlistener handlers
 //---------------------------------------------------------------//
-// Initialize tasks event listeners
-export function initDOMTasksEventListeners(tasks){
-    document.querySelectorAll(".task .checkbox").forEach(checkbox => {
-        checkbox.addEventListener("click", (e) =>{
-            const task = getTaskById(+e.target.parentElement.id, tasks)
-            task.toggleComplete();
-            Navigator.runActivePage();
+export function initDOMTasksEventListeners(task){
+    document.querySelectorAll(".task .UIElement").forEach(DOMtask => {
+        DOMtask.addEventListener("click", (e) =>{
+            if(e.currentTarget.classList.contains("checkbox")){
+                task.toggleComplete();
+                console.log(task.getIsComplete())
+                Navigator.runActivePage();
+            }
+            else if(e.currentTarget.classList.contains("utility")){
+                console.log(e.currentTarget.id);
+            }
         });
     });
 }
 
-
 // Initialize project event listeners
-export function initSideBarEventListeners(projects){
-    //add projects to sidebarconfig
-    projects.forEach(project =>{
-        Navigator.addToPageConfigs(project.getId(), () => {
-            switchActiveProject(project.getId());
-            UIdisplayPage(project.name, project.getTasks());
-        });
+export function initSideBarEventListeners(project, button){
+    //add project to sidebarconfig
+    Navigator.addToPageConfigs(project.getId(), () => {
+        switchActiveProject(project.getId());
+        UIdisplayPage(project.name, project.getTasks());
     });
-
-    document.querySelectorAll(".project-list button").forEach(button => {
-        button.addEventListener("click", (e) =>{
-            handleNavigatorDOMclick(e.currentTarget.id);
-        });
+    
+    button.addEventListener("click", (e) =>{
+        handleNavigatorDOMclick(e.currentTarget.id)
     });   
 }
 

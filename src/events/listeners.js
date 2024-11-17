@@ -1,6 +1,4 @@
 import * as DOMHandler from "./handlers";
-import { EventEmitter } from "./emitter";
-
 
 export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
@@ -40,13 +38,6 @@ export function initOnloadEventlisteners(projectManager, taskManager){
             DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
         });
     });
-
-    //subscribers
-    //When page reloaded, re-initialize event listeners to tasks
-    EventEmitter.subscribe('PageReload', (...args) => DOMHandler.initDOMTasksEventListeners(args[0]));
-
-    //When projectDOM reloaded, re-initialize event listeners to projects
-    EventEmitter.subscribe('SidebarReload', (...args) => DOMHandler.initSideBarEventListeners(args[0]));
 }
 
 
