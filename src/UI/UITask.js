@@ -1,6 +1,9 @@
 import "../resources/helper_js_files/domAssests.js"
 import folderIcon from "../resources/images/folder-outline.svg";
 import { initDOMTasksEventListeners } from "../events/handlers.js";
+import { EventEmitter } from "../models/emitter"
+
+export const taskLoadEvent = new Event("DOMTaskLoaded");
 
 export function UIrenderTitle(container, headertext){
     container.textContent = "";
@@ -38,7 +41,7 @@ export function UIrenderTasks(container, tasks){
         //right side
         const right = document.createElement("div");
         right.classList.add("row-flex");
-        for(let i =0; i<3; i++){
+        for(let i =0; i<2; i++){
             const button = document.createElement("button");
             button.setAttribute("type", "button");
             button.classList.add("utility", "UIElement", "row-flex")
@@ -55,12 +58,12 @@ export function UIrenderTasks(container, tasks){
         div.appendChild(right);
 
         container.appendChild(div);
-        initDOMTasksEventListeners(task)
+        EventEmitter.publish("DOMtaskload", task);
     });
    
 }
 
-// helper functions
+// helpers
 //---------------------------------------------------------------//
 export function UIdisplayPage(title, tasks){
     const contentDom = document.querySelector(".content");
@@ -69,3 +72,4 @@ export function UIdisplayPage(title, tasks){
     UIrenderTitle(titleDom, title);
     UIrenderTasks(contentDom, tasks);
 };
+

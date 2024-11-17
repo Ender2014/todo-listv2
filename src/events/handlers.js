@@ -20,6 +20,8 @@ export function onload(projectManager, defualtProjectName){
 //---------------------------------------------------------------//
 export function openTaskPopup(){
     const popup = document.querySelector(".taskModal");
+    const modal = document.querySelector(".taskModal h2");
+    modal.textContent = "Add Task";
     popup.showModal();
 }
 
@@ -98,16 +100,22 @@ export function handleNavigatorDOMclick(DOMId){
 
 // Adding eventlistener handlers
 //---------------------------------------------------------------//
-export function initDOMTasksEventListeners(task){
+export function initDOMTasksEventListeners(task, taskManager){
     document.querySelectorAll(".task .UIElement").forEach(DOMtask => {
         DOMtask.addEventListener("click", (e) =>{
             if(e.currentTarget.classList.contains("checkbox")){
                 task.toggleComplete();
-                console.log(task.getIsComplete())
                 Navigator.runActivePage();
+            
             }
             else if(e.currentTarget.classList.contains("utility")){
-                console.log(e.currentTarget.id);
+                if (e.currentTarget.id.includes("0")){
+                   
+    
+                } else if (e.currentTarget.id.includes("1")){
+                    taskManager.removeTask(task.getId());
+                }
+                Navigator.runActivePage();
             }
         });
     });

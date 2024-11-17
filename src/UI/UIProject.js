@@ -1,6 +1,7 @@
 import "../resources/helper_js_files/domAssests.js";
 import folderIcon from "../resources/images/folder-outline.svg";
 import { initSideBarEventListeners } from "../events/handlers.js";
+import { EventEmitter } from "../models/emitter"
 
 // can be generalized into a renderer
 export function UIrenderProjects(container, projects){
@@ -27,7 +28,8 @@ export function UIrenderProjects(container, projects){
         button.appendChild(span);
 
         li.appendChild(button);
-        initSideBarEventListeners(project, button);
         container.appendChild(li);
+        EventEmitter.publish("DOMprojectload", project, button);
     });
 }
+
