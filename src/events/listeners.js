@@ -4,7 +4,7 @@ import { EventEmitter } from "../models/emitter"
 export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
     DOMHandler.initializeNavigatorPages(taskManager);
-    DOMHandler.onload(projectManager, "Default Bitch");
+    DOMHandler.onload(projectManager, "My Tasks");
 
     //add project popup
     document.querySelector(".addproject").addEventListener("click",() => {
@@ -42,10 +42,8 @@ export function initOnloadEventlisteners(projectManager, taskManager){
     });
 
     EventEmitter.subscribe("DOMtaskload", (task) => {
-        DOMHandler.initDOMTasksEventListeners(task, taskManager)
+        DOMHandler.initDOMTasksEventListeners(task, taskManager, projectManager)
     });
-    
-    
 }
 
 

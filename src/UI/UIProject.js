@@ -13,17 +13,30 @@ export function UIrenderProjects(container, projects){
         button.setAttribute("type", "button");
         button.classList.add("project", "row-flex")
         button.id = project.getId();
-        
-        const img = document.createElement("img");
-        img.src = folderIcon;
-        
+
+        // Create a namespace for SVG
+        const SVG_NS = "http://www.w3.org/2000/svg";
+
+        // Create the main <svg> element
+        const svg = document.createElementNS(SVG_NS, "svg");
+        svg.setAttribute("xmlns", SVG_NS);
+        svg.setAttribute("viewBox", "0 0 24 24");
+
+        // Create the <path> element
+        const path = document.createElementNS(SVG_NS, "path");
+        path.setAttribute("d", "M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z");
+
+        // Append the <path> to the <svg>
+        svg.appendChild(path);
+
+
         const h3 = document.createElement("h3");
         h3.textContent = project.name;
 
         const span = document.createElement("span");
         span.textContent = `(${project.getTasks().length})`;
 
-        button.appendChild(img);
+        button.appendChild(svg);
         button.appendChild(h3);
         button.appendChild(span);
 

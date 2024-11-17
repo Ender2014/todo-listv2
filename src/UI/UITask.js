@@ -1,13 +1,12 @@
 import "../resources/helper_js_files/domAssests.js"
 import folderIcon from "../resources/images/folder-outline.svg";
-import { initDOMTasksEventListeners } from "../events/handlers.js";
+import trashIcon from "../resources/images/trash-svgrepo-com.svg";
+import editIcon from "../resources/images/edit.svg"
 import { EventEmitter } from "../models/emitter"
-
-export const taskLoadEvent = new Event("DOMTaskLoaded");
 
 export function UIrenderTitle(container, headertext){
     container.textContent = "";
-    const h1 = document.createElement("h1");
+    const h1 = document.createElement("h2");
     h1.classList.add("header");
     h1.textContent = headertext;
     container.appendChild(h1);
@@ -18,7 +17,7 @@ export function UIrenderTasks(container, tasks){
 
     tasks.forEach(task => {
         const div = document.createElement("div");
-        div.classList.add("task");
+        div.classList.add("task","row-flex", "wide", "underline");
         div.id = task.getId();
 
         //left side
@@ -41,14 +40,27 @@ export function UIrenderTasks(container, tasks){
         //right side
         const right = document.createElement("div");
         right.classList.add("row-flex");
-        for(let i =0; i<2; i++){
+        for(let i =0; i<1; i++){
             const button = document.createElement("button");
             button.setAttribute("type", "button");
             button.classList.add("utility", "UIElement", "row-flex")
             button.id = `task${task.getId()}-utility${i}`;
 
             const img = document.createElement("img");
-            img.src = folderIcon;
+            img.src = editIcon;
+            button.appendChild(img);
+            
+            right.appendChild(button);
+        }
+
+        for(let i =1; i<2; i++){
+            const button = document.createElement("button");
+            button.setAttribute("type", "button");
+            button.classList.add("utility", "UIElement", "row-flex")
+            button.id = `task${task.getId()}-utility${i}`;
+
+            const img = document.createElement("img");
+            img.src = trashIcon;
             button.appendChild(img);
             
             right.appendChild(button);

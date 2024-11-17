@@ -100,23 +100,21 @@ export function handleNavigatorDOMclick(DOMId){
 
 // Adding eventlistener handlers
 //---------------------------------------------------------------//
-export function initDOMTasksEventListeners(task, taskManager){
+export function initDOMTasksEventListeners(task, taskManager, projectManager){
     document.querySelectorAll(".task .UIElement").forEach(DOMtask => {
         DOMtask.addEventListener("click", (e) =>{
-            if(e.currentTarget.classList.contains("checkbox")){
+            if(e.currentTarget.id === `task${task.getId()}-checkbox`){
                 task.toggleComplete();
-                Navigator.runActivePage();
-            
-            }
-            else if(e.currentTarget.classList.contains("utility")){
-                if (e.currentTarget.id.includes("0")){
-                   
+
+            } else if (e.currentTarget.id === `task${task.getId()}-utility0`){
+                    
     
-                } else if (e.currentTarget.id.includes("1")){
-                    taskManager.removeTask(task.getId());
-                }
-                Navigator.runActivePage();
+            } else if (e.currentTarget.id === `task${task.getId()}-utility1`){
+                taskManager.removeTask(task.getId());
+                UIrenderProjects(document.querySelector(".project-list"),  projectManager.getAllProjects());
             }
+                Navigator.runActivePage();
+
         });
     });
 }
