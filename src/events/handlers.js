@@ -14,27 +14,27 @@ export function onload(projectManager,taskManager){
         
         const projects = fetchFromStorage("projects");
         const tasks = fetchFromStorage("tasks");
-
-        if(projects.length === 0){
+ 
+        if(!projects){
             const project = new Project("My Tasks");
+            projectManager.addProject(project)
             switchActiveProject(project.getId());
-        }
-
-        else{
+         
+        } else{
             projects.forEach(project => {
                 const projectSS =  Project.fromJSON(project);
                 projectManager.addProject(projectSS);
 
-                tasks.forEach((task) => {
-                    const taskSS = Task.fromJSON(task);
-                    if (taskSS.projectId === projectSS.getId()){
-                        projectSS.addTask(taskSS );
-                    }
-                });
-
+                if(tasks){
+                    tasks.forEach((task) => {
+                        const taskSS = Task.fromJSON(task);
+                        if (taskSS.projectId === projectSS.getId()){
+                            projectSS.addTask(taskSS );
+                        }
+                    });
+                }
             });
-
-
+            switchActiveProject(1);
         }
 
         EventEmitter.subscribe("DOMprojectload", (project, button) => {
