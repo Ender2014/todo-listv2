@@ -16,6 +16,7 @@ export class Project {
     }
   
     addTask(task) {
+      console.log(typeof(tasks))
       this.tasks.set(task.getId(), task);
     }
   
@@ -26,6 +27,12 @@ export class Project {
     getTask(taskId) {
       return this.tasks.get(taskId);
     }
+
+    static fromJSON(serializedJson) {
+      const project = Object.assign(new Project(), serializedJson); // Assign properties to a new instance
+      project.tasks = new Map(Object.entries(serializedJson.tasks)); // Convert plain object to Map
+      return project;
+  }
   }
 
 export class ProjectManager {

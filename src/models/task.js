@@ -3,41 +3,44 @@ import { isWithinInterval, addDays, startOfToday } from 'date-fns';
 import { getActiveProject,switchActiveProject } from "./project";
 
 export class Task {
-   static idCounter = 0;
+    static idCounter = 0;
 
-   constructor(name, desc, /*projectId*/ dueDate, priority) {
-     this.name = name;
-     this.id = ++Task.idCounter;
-     //this.projectId = projectId;
-     this.desc = desc;
-     this.dueDate = dueDate ? new Date(dueDate) : null; // Validated due date
-     this.priority = priority;
-     this.isComplete = false; // Default to incomplete
-   }
- 
-   // Getters
-   getId() {
-     return this.id;
-   }
+    constructor(name, desc, projectId, dueDate, priority) {
+      this.name = name;
+      this.id = ++Task.idCounter;
+      this.projectId = projectId;
+      this.desc = desc;
+      this.dueDate = dueDate ? new Date(dueDate) : null; // Validated due date
+      this.priority = priority;
+      this.isComplete = false; // Default to incomplete
+    }
+  
+    // Getters
+    getId() {
+      return this.id;
+    }
 
-   getProjectId(){
-      return this.projectId;
-   }
-   
-   getIsComplete() {
-     return this.isComplete;
-   }
- 
-   // Methods
-   toggleComplete() {
-     this.isComplete = !this.isComplete;
-     console.log(`Task ${this.id} marked ${this.isComplete}.`)
-   }
+    getProjectId(){
+        return this.projectId;
+    }
+    
+    getIsComplete() {
+      return this.isComplete;
+    }
+  
+    // Methods
+    toggleComplete() {
+      this.isComplete = !this.isComplete;
+      console.log(`Task ${this.id} marked ${this.isComplete}.`)
+    }
 
-   checkOverdue() {
-      return isBefore(new Date(this.getDate()), new Date());
+    checkOverdue() {
+        return isBefore(new Date(this.getDate()), new Date());
+    }
+    static fromJSON(serializedJson) {
+      return Object.assign(new Task(), serializedJson)
   }
- }
+}
 
 export class TaskManager {
    constructor(projectManager) {

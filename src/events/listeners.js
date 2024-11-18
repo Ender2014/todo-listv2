@@ -1,20 +1,9 @@
 import * as DOMHandler from "./handlers";
-import { EventEmitter } from "../models/emitter"
 
 export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
     document.addEventListener("DOMContentLoaded", ()=>{
-
-        EventEmitter.subscribe("DOMprojectload", (project, button) => {
-            DOMHandler.initSideBarEventListeners(project, button)
-        });
-
-        EventEmitter.subscribe("DOMtaskload", (task) => {
-            DOMHandler.initDOMTasksEventListeners(task, taskManager, projectManager)
-        });
-
-        DOMHandler.initializeNavigatorPages(taskManager);
-        DOMHandler.onload(projectManager, "My Tasks");
+        DOMHandler.onload(projectManager,taskManager);
     });
     //add project popup
     document.querySelector(".addproject").addEventListener("click",() => {

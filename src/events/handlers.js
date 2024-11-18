@@ -1,5 +1,6 @@
 import "../resources/helper_js_files/domAssests.js"
-import { Project,switchActiveProject } from "../models/project.js";
+import { Project,switchActiveProject,getActiveProject} from "../models/project.js";
+import { EventEmitter } from "../models/emitter.js";
 import { Task } from "../models/task.js";
 import { Navigator } from "../models/navigator.js";
 import { UIrenderProjects } from "../UI/UIProject.js";
@@ -7,13 +8,53 @@ import { UIdisplayPage } from "../UI/UITask.js";
 
 //Onload handlers
 //---------------------------------------------------------------//
-export function onload(projectManager, defualtProjectName){
-    const project = new Project(defualtProjectName);
-    projectManager.addProject(project);
-    switchActiveProject(project.getId());
+export function onload(projectManager,taskManager){
+    if (storageAvailable("localStorage")) {
+        console.log("localStorage API loaded.");
+        
+        const projects = fetchFromStorage("projects");
+        const tasks = fetchFromStorage("tasks");
+
+        if(projects.length === 0){
+            const project = new Project("My Tasks");
+            switchActiveProject(project.getId());
+        }
+
+        else{
+            projects.forEach(project => {
+                const projectSS =  Project.fromJSON(project);
+                projectManager.addProject(projectSS);
+
+                tasks.forEach((task) => {
+                    const taskSS = Task.fromJSON(task);
+                    if (taskSS.projectId === projectSS.getId()){
+                        projectSS.addTask(taskSS );
+                    }
+                });
+
+            });
+
+
+        }
+
+        EventEmitter.subscribe("DOMprojectload", (project, button) => {
+            initSideBarEventListeners(project, button)
+        });
+
+        EventEmitter.subscribe("DOMtaskload", (task) => {
+            initDOMTasksEventListeners(task, taskManager, projectManager)
+        });
+
+        initializeNavigatorPages(taskManager);
+
+      } else {
+        console.log("localStorage API loaded not found");
+      }
+    
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
     UIrenderProjects(projectList, allProjects);
+    populateStorage("projects", allProjects);
 }
 
 //Popup handlers
@@ -39,14 +80,20 @@ export function addTaskPopup(projectManager, taskManager){
     const dueDate = form.elements['dueDate'].value;
     const priority = form.elements['priority'].value;
 
-    const task = new Task(title, desc, dueDate, priority);
+    const task = new Task(title, desc, getActiveProject().getId(), dueDate, priority);
     taskManager.addTask(task);
 
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
 
+    const allTasks = taskManager.getAllTasks();
+
     Navigator.runActivePage();
     UIrenderProjects(projectList, allProjects);
+
+    populateStorage("projects", allProjects);
+    populateStorage("tasks",allTasks);
+
     closeTaskPopup();
 }
 
@@ -68,11 +115,12 @@ export function addProjectPopup(projectManager){
 
     const project = new Project(title);
     projectManager.addProject(project);
-    
+
     const projectList = document.querySelector(".project-list");
     const allProjects = projectManager.getAllProjects();
 
     UIrenderProjects(projectList,allProjects);
+    populateStorage(allProjects);
     closeProjectPopup();
 }
 
@@ -98,14 +146,37 @@ export function handleNavigatorDOMclick(DOMId){
     Navigator.runActivePage();
 }
 // Storage events
-export function saveToStorage(){
-
+//---------------------------------------------------------------//
+export function populateStorage(name, item){
+    if(item){
+        localStorage.setItem(name, JSON.stringify(item));
+        return;
+    }
+   console.log("Invalid item");
 }
 
-export function fetchFromStorage(){
-
+export function fetchFromStorage(key){
+    return JSON.parse(localStorage.getItem(key));
 }
 
+export function storageAvailable(type) {
+    let storage;
+    try {
+      storage = window[type];
+      const x = "__storage_test__";
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return true;
+    } catch (e) {
+      return (
+        e instanceof DOMException &&
+        e.name === "QuotaExceededError" &&
+        // acknowledge QuotaExceededError only if there's something already stored
+        storage &&
+        storage.length !== 0
+      );
+    }
+  }
 // Adding eventlistener handlers
 //---------------------------------------------------------------//
 export function initDOMTasksEventListeners(task, taskManager, projectManager){
@@ -113,16 +184,18 @@ export function initDOMTasksEventListeners(task, taskManager, projectManager){
         DOMtask.addEventListener("click", (e) =>{
             if(e.currentTarget.id === `task${task.getId()}-checkbox`){
                 task.toggleComplete();
-
+                
             } else if (e.currentTarget.id === `task${task.getId()}-utility0`){
                 
     
             } else if (e.currentTarget.id === `task${task.getId()}-utility1`){
+                const allProjects = projectManager.getAllProjects();
                 taskManager.removeTask(task.getId());
-                UIrenderProjects(document.querySelector(".project-list"),  projectManager.getAllProjects());
+                UIrenderProjects(document.querySelector(".project-list"), allProjects );
             }
-                Navigator.runActivePage();
-
+            Navigator.runActivePage();
+            const allTasks = taskManager.getAllTasks();
+            populateStorage("tasks",allTasks);
         });
     });
 }
