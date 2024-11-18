@@ -11,7 +11,7 @@ export function UIrenderProjects(container, projects){
 
         const button = document.createElement("button");
         button.setAttribute("type", "button");
-        button.classList.add("project", "row-flex")
+        button.classList.add("project", "row-flex");
         button.id = project.getId();
 
         // Create a namespace for SVG

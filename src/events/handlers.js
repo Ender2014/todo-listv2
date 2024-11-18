@@ -97,6 +97,14 @@ export function handleNavigatorDOMclick(DOMId){
     Navigator.selectPage(DOMId);
     Navigator.runActivePage();
 }
+// Storage events
+export function saveToStorage(){
+
+}
+
+export function fetchFromStorage(){
+
+}
 
 // Adding eventlistener handlers
 //---------------------------------------------------------------//
