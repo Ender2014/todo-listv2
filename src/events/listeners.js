@@ -3,9 +3,19 @@ import { EventEmitter } from "../models/emitter"
 
 export function initOnloadEventlisteners(projectManager, taskManager){
     //onload
-    DOMHandler.initializeNavigatorPages(taskManager);
-    DOMHandler.onload(projectManager, "My Tasks");
+    document.addEventListener("DOMContentLoaded", ()=>{
 
+        EventEmitter.subscribe("DOMprojectload", (project, button) => {
+            DOMHandler.initSideBarEventListeners(project, button)
+        });
+
+        EventEmitter.subscribe("DOMtaskload", (task) => {
+            DOMHandler.initDOMTasksEventListeners(task, taskManager, projectManager)
+        });
+
+        DOMHandler.initializeNavigatorPages(taskManager);
+        DOMHandler.onload(projectManager, "My Tasks");
+    });
     //add project popup
     document.querySelector(".addproject").addEventListener("click",() => {
         DOMHandler.openProjectPopup();
@@ -35,14 +45,6 @@ export function initOnloadEventlisteners(projectManager, taskManager){
         button.addEventListener("click", (e) =>{
             DOMHandler.handleNavigatorDOMclick(e.currentTarget.id);
         });
-    });
-
-    EventEmitter.subscribe("DOMprojectload", (project, button) => {
-        DOMHandler.initSideBarEventListeners(project, button)
-    });
-
-    EventEmitter.subscribe("DOMtaskload", (task) => {
-        DOMHandler.initDOMTasksEventListeners(task, taskManager, projectManager)
     });
 }
 
